@@ -15,19 +15,19 @@
         ansible_python_interpreter: "/usr/bin/env python3"
       when: "'python3' not in (ansible_python_interpreter | default(''))"
       tags: always
-
+    # 加载vars/main.yml的变量
     - name: Include main variables
       ansible.builtin.include_vars: "vars/main.yml"
       tags: always
-
+    # 加载vars/system.yml的变量
     - name: Include system variables
       ansible.builtin.include_vars: "vars/system.yml"
       tags: always
-
+    # 加载vars/{{ ansible_os_family }}.yml的变量,比如ubuntu.yml
     - name: Include OS-specific variables
       ansible.builtin.include_vars: "vars/{{ ansible_os_family }}.yml"
       tags: always
-
+    # 打印系统信息
     - name: System information
       ansible.builtin.debug:
         var: system_info
@@ -53,7 +53,7 @@
           Virtualization type: "{{ ansible_virtualization_type | default('N/A') }}"
           Product name: "{{ ansible_product_name | default('N/A') }}"
       tags: always
-
+  # 引入pre-checks.yml的role
   roles:
     - role: pre-checks
       vars:
