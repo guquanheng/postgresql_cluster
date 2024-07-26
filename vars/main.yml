@@ -507,6 +507,16 @@ postgresql_parameters:
 #  - { option: "", value: "" }
 #  - { option: "", value: "" }
 
+
+这段配置文件用于设置在更改需要重启的 `postgresql_parameters` 变量后，是否自动重启集群。具体解释如下：
+
+- **`pending_restart: false`**:
+  - 设置是否在更改 `postgresql_parameters` 后自动重启集群。
+  - `false` 表示默认情况下集群不会自动重启。
+  - 如果设置为 `true`，集群将在更改需要重启的参数后自动重启。
+
+总结：
+通过将 `pending_restart` 设置为 `true`，可以在更改需要重启的PostgreSQL参数后自动重启集群。默认情况下，集群不会自动重启。
 # Set this variable to 'true' if you want the cluster to be automatically restarted
 # after changing the 'postgresql_parameters' variable that requires a restart in the 'config_pgcluster.yml' playbook.
 # By default, the cluster will not be automatically restarted.
