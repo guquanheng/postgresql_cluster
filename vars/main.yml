@@ -7,6 +7,37 @@ proxy_env: {}  # yamllint disable rule:braces
 # ---------------------------------------------------------------------
 
 # Cluster variables
+这段配置文件用于设置PostgreSQL高可用集群的相关参数，以下是每个配置项的详细解释：
+
+- **`cluster_vip: ""`**:
+  - 集群的虚拟IP地址，供客户端访问数据库使用（可选）。如果为空，则不使用VIP。
+
+- **`vip_interface: "{{ ansible_default_ipv4.interface }}"`**:
+  - 使用VIP时的网络接口名称，例如 "ens32"。默认使用 `ansible_default_ipv4.interface`。
+
+- **注意**: 
+  - 基于VIP的解决方案如 `keepalived` 或 `vip-manager` 在云环境（如AWS）中可能无法正常工作。
+
+- **`patroni_cluster_name: "postgres-cluster"`**:
+  - Patroni集群的名称，必须在每个集群中唯一。
+
+- **`patroni_install_version: "3.3.2"`**:
+  - 指定安装的Patroni版本，可以是具体版本号或 `'latest'`。
+
+- **`patroni_superuser_username: "postgres"`**:
+  - Patroni使用的超级用户用户名。
+
+- **`patroni_superuser_password: "postgres-pass"`**:
+  - Patroni超级用户的密码（请更改为实际使用的密码）。
+
+- **`patroni_replication_username: "replicator"`**:
+  - 用于复制的用户名。
+
+- **`patroni_replication_password: "replicator-pass"`**:
+  - 用于复制的密码（请更改为实际使用的密码）。
+
+总结：
+这段配置主要用于设置PostgreSQL高可用集群的VIP、Patroni安装版本、集群名称以及相关的用户和密码信息。
 cluster_vip: ""  # IP address for client access to the databases in the cluster (optional).
 vip_interface: "{{ ansible_default_ipv4.interface }}"  # interface name (e.g., "ens32").
 # Note: VIP-based solutions such as keepalived or vip-manager may not function correctly in cloud environments like AWS.
