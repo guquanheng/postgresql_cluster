@@ -250,6 +250,31 @@ consul_services:
 
 
 # PostgreSQL variables
+这段配置文件用于设置PostgreSQL数据库的相关参数，以下是每个配置项的详细解释：
+
+- **`postgresql_version: "16"`**:
+  - 指定要安装和使用的PostgreSQL版本，这里是16版本。
+
+- **`postgresql_listen_addr: "0.0.0.0"`**:
+  - 数据库监听的地址。`0.0.0.0` 表示监听所有接口。也可以使用 `{{ inventory_hostname }},127.0.0.1` 来监听特定IP地址。
+
+- **`postgresql_port: "5432"`**:
+  - 数据库监听的端口，默认是5432。
+
+- **`postgresql_encoding: "UTF8"`**:
+  - 数据库的字符编码，只在数据库初始化（`initdb`）时有效。
+
+- **`postgresql_locale: "en_US.UTF-8"`**:
+  - 数据库的区域设置，只在数据库初始化（`initdb`）时有效。
+
+- **`postgresql_data_checksums: true`**:
+  - 是否启用数据校验和，只在数据库初始化（`initdb`）时有效。启用校验和可以帮助检测磁盘故障导致的数据损坏。
+
+- **`postgresql_password_encryption_algorithm: "scram-sha-256"`**:
+  - 设置数据库使用的密码加密算法。`scram-sha-256` 是更安全的算法；如果客户端不支持，可以使用 `md5`。
+
+总结：
+这段配置文件定义了PostgreSQL数据库的版本、监听地址、端口、编码、区域设置、数据校验和以及密码加密算法。在初始化数据库时，这些配置会被应用。
 postgresql_version: "16"
 # postgresql_data_dir: see vars/Debian.yml or vars/RedHat.yml
 postgresql_listen_addr: "0.0.0.0" # Listen on all interfaces. Or use "{{ inventory_hostname }},127.0.0.1" to listen on a specific IP address.
