@@ -359,7 +359,68 @@ postgresql_extensions: []
 #  - { ext: "", db: "" }
 #  - { ext: "", db: "" }
 
+这段配置文件定义了PostgreSQL的参数设置，用于调整数据库的性能、安全性和其他行为。以下是各个参数的详细解释：
 
+- **连接和用户相关**：
+  - `max_connections`: 允许的最大连接数。
+  - `superuser_reserved_connections`: 保留给超级用户的连接数。
+
+- **密码和加密**：
+  - `password_encryption`: 密码加密算法，使用变量 `{{ postgresql_password_encryption_algorithm }}`。
+
+- **内存和缓存**：
+  - `shared_buffers`: 分配给PostgreSQL的共享内存大小，默认是总内存的25%。
+  - `effective_cache_size`: 假定操作系统缓存的大小，默认是总内存的75%。
+  - `work_mem`: 每个操作（如排序）分配的内存大小。
+  - `maintenance_work_mem`: 维护操作（如VACUUM）的内存大小。
+
+- **检查点和WAL**：
+  - `checkpoint_timeout`: 检查点之间的时间。
+  - `checkpoint_completion_target`: 检查点完成时间的目标。
+  - `min_wal_size`: 最小WAL日志大小。
+  - `max_wal_size`: 最大WAL日志大小。
+  - `wal_buffers`: WAL缓冲区大小。
+
+- **自动真空**：
+  - `autovacuum`: 启用自动真空。
+  - `autovacuum_max_workers`: 自动真空的最大工作进程数。
+  - `autovacuum_vacuum_scale_factor`: 自动真空的比例因子。
+  - `autovacuum_analyze_scale_factor`: 自动分析的比例因子。
+  - `autovacuum_vacuum_cost_limit`: 自动真空的成本限制。
+  - `autovacuum_vacuum_cost_delay`: 自动真空的成本延迟。
+  - `autovacuum_naptime`: 自动真空的休眠时间。
+
+- **归档和WAL**：
+  - `archive_mode`: 启用归档模式。
+  - `archive_timeout`: 归档超时时间。
+  - `archive_command`: 保留的WAL日志大小。
+  - `max_wal_senders`: 最大WAL发送端数量。
+  - `max_replication_slots`: 最大复制槽数量。
+  - `hot_standby`: 启用热备份。
+
+- **性能和优化**：
+  - `random_page_cost`: 随机访问页面的成本（HDD设置为4，SSD设置为1.1）。
+  - `effective_io_concurrency`: IO并发数（HDD设置为2，SSD设置为200）。
+
+- **日志和监控**：
+  - `logging_collector`: 启用日志收集器。
+  - `log_checkpoints`: 记录检查点。
+  - `log_directory`: 日志目录，使用变量 `{{ postgresql_log_dir }}`。
+  - `log_line_prefix`: 日志行前缀格式。
+  - `log_filename`: 日志文件名格式。
+
+- **并行和工作进程**：
+  - `max_worker_processes`: 最大工作进程数。
+  - `max_parallel_workers`: 最大并行工作进程数。
+  - `max_parallel_workers_per_gather`: 每个GATHER的最大并行工作进程数。
+  - `max_parallel_maintenance_workers`: 最大并行维护工作进程数。
+
+- **TCP设置**：
+  - `tcp_keepalives_count`: TCP保持连接计数。
+  - `tcp_keepalives_idle`: TCP保持连接空闲时间。
+  - `tcp_keepalives_interval`: TCP保持连接间隔时间。
+
+这些参数可以根据您的具体需求进行调整，以优化PostgreSQL的性能、可靠性和安全性。
 # postgresql parameters to bootstrap dcs (are parameters for example)
 postgresql_parameters:
   - { option: "max_connections", value: "500" }
