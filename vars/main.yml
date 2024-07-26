@@ -36,6 +36,35 @@ synchronous_mode_strict: false  # if 'true' then block all client writes to the 
 synchronous_node_count: 1  # number of synchronous standby databases
 
 # Load Balancing
+这段配置文件用于设置HAProxy的负载均衡和相关参数，以下是每个配置项的详细解释：
+
+- **`with_haproxy_load_balancing: false`**:
+  - 指定是否安装和配置负载均衡。如果为 `true`，则启用HAProxy负载均衡；如果为 `false`，则不启用。
+
+- **`haproxy_listen_port:`**:
+  - **`master: 5000`**: 主节点的监听端口。
+  - **`replicas: 5001`**: 副本节点的监听端口。
+  - **`replicas_sync: 5002`**: 同步副本的监听端口。
+  - **`replicas_async: 5003`**: 异步副本的监听端口。
+  - **`stats: 7000`**: HAProxy统计信息的监听端口。
+
+- **`haproxy_maxconn:`**:
+  - **`global: 100000`**: 全局最大连接数。
+  - **`master: 10000`**: 主节点的最大连接数。
+  - **`replica: 10000`**: 副本节点的最大连接数。
+
+- **`haproxy_timeout:`**:
+  - **`client: "60m"`**: 客户端超时时间设置为60分钟。
+  - **`server: "60m"`**: 服务器超时时间设置为60分钟。
+
+- **直接连接端口**:
+  - **`master_direct: 6000`**: 直接连接到主节点的端口（未启用）。
+  - **`replicas_direct: 6001`**: 直接连接到副本节点的端口（未启用）。
+  - **`replicas_sync_direct: 6002`**: 直接连接到同步副本的端口（未启用）。
+  - **`replicas_async_direct: 6003`**: 直接连接到异步副本的端口（未启用）。
+
+总结：
+这段配置文件用于设置HAProxy负载均衡的各项参数，包括监听端口、最大连接数和超时时间。还提供了直接连接到PostgreSQL数据库的端口设置（目前被注释）。
 with_haproxy_load_balancing: false  # or 'true' if you want to install and configure the load-balancing
 haproxy_listen_port:
   master: 5000
