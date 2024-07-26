@@ -635,6 +635,23 @@ pgbouncer_pools:
 
 
 # Extended variables (optional)
+这段配置文件定义了Patroni的扩展变量，用于配置Patroni的REST API和集群行为。以下是每个参数的详细解释：
+
+- **REST API相关**：
+  - **`patroni_restapi_listen_addr`**: REST API监听的IP地址，`0.0.0.0`表示监听所有接口，也可以使用`{{ inventory_hostname }}`监听特定IP地址。
+  - **`patroni_restapi_port`**: REST API的端口号。
+  - **`patroni_restapi_username`**: REST API的用户名。
+  - **`patroni_restapi_password`**: REST API的密码（请更改默认密码）。
+
+- **集群行为相关**：
+  - **`patroni_ttl`**: 集群的TTL（存活时间），单位为秒。
+  - **`patroni_loop_wait`**: Patroni主循环的等待时间，单位为秒。
+  - **`patroni_retry_timeout`**: 操作重试的超时时间，单位为秒。
+  - **`patroni_master_start_timeout`**: 启动主节点的超时时间，单位为秒。
+  - **`patroni_maximum_lag_on_failover`**: 切换时，跟随节点可以落后主节点的最大字节数。
+  - **`patroni_maximum_lag_on_replica`**: 副本节点在只读查询中可以落后的最大延迟（这里是100MB）。
+
+这些参数可以根据您的需求进行调整，以优化Patroni集群的性能和行为。
 patroni_restapi_listen_addr: "0.0.0.0" # Listen on all interfaces. Or use "{{ inventory_hostname }}" to listen on a specific IP address.
 patroni_restapi_port: 8008
 patroni_restapi_username: "patroni"
