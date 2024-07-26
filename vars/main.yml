@@ -604,6 +604,29 @@ pgbouncer_client_tls_ca_file: ""
 pgbouncer_client_tls_protocols: "secure" # allowed values: tlsv1.0, tlsv1.1, tlsv1.2, tlsv1.3, all, secure (tlsv1.2,tlsv1.3)
 pgbouncer_client_tls_ciphers: "default" # allowed values: default, secure, fast, normal, all (not recommended)
 
+
+
+
+
+
+
+这段配置文件定义了PgBouncer连接池的参数。以下是每个配置项的详细解释：
+
+- **`pgbouncer_pools`**: 连接池的列表。
+  - `{ name: "postgres", dbname: "postgres", pool_parameters: "" }`:
+    - `name`: 连接池的名称，这里是 "postgres"。
+    - `dbname`: 连接到的数据库名称，这里是 "postgres"。
+    - `pool_parameters`: 连接池的其他参数，这里为空。
+
+  - 示例配置（未启用）：
+    - `{ name: "mydatabase", dbname: "mydatabase", pool_parameters: "pool_size=20 pool_mode=transaction" }`:
+      - `name`: 连接池的名称，这里是 "mydatabase"。
+      - `dbname`: 连接到的数据库名称，这里是 "mydatabase"。
+      - `pool_parameters`: 连接池的其他参数，如 `pool_size=20 pool_mode=transaction`。
+
+  - 其他示例配置（未启用），未指定名称、数据库名称和连接池参数。
+
+这些参数可以根据需要启用和调整，以定义不同数据库的连接池设置。
 pgbouncer_pools:
   - { name: "postgres", dbname: "postgres", pool_parameters: "" }
 #  - { name: "mydatabase", dbname: "mydatabase", pool_parameters: "pool_size=20 pool_mode=transaction" }
