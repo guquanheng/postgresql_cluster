@@ -285,6 +285,32 @@ postgresql_data_checksums: true  # for bootstrap only (initdb)
 postgresql_password_encryption_algorithm: "scram-sha-256"  # or "md5" if your clients do not work with passwords encrypted with SCRAM-SHA-256
 
 # (optional) list of users to be created (if not already exists)
+这段配置文件用于创建PostgreSQL用户，如果用户不存在的话。以下是每个配置项的详细解释：
+
+- **`postgresql_users`**:
+  - **`name`**: 用户名。
+  - **`password`**: 用户密码。
+  - **`flags`**: 用户权限标志，例如 `LOGIN`, `SUPERUSER`, `NOSUPERUSER`, `NOLOGIN` 等。
+  - **`role`**: 用户的角色或分配的角色。
+
+示例解释：
+- **`{ name: "{{ pgbouncer_auth_username }}", password: "{{ pgbouncer_auth_password }}", flags: "LOGIN", role: "" }`**
+  - 创建一个用户名为 `pgbouncer_auth_username` 的用户，密码为 `pgbouncer_auth_password`，具有 `LOGIN` 权限且无特定角色。
+
+- **`{ name: "monitoring_auth_username", password: "monitoring_user_password", flags: "LOGIN", role: "pg_monitor" }`**
+  - 监控服务帐户示例，用户名为 `monitoring_auth_username`，密码为 `monitoring_user_password`，具有 `LOGIN` 权限和 `pg_monitor` 角色。
+
+- **`{ name: "mydb-user", password: "mydb-user-pass", flags: "SUPERUSER" }`**
+  - 创建一个超级用户示例，用户名为 `mydb-user`，密码为 `mydb-user-pass`，具有 `SUPERUSER` 权限。
+
+- **`{ name: "", password: "", flags: "NOSUPERUSER" }`**
+  - 创建一个普通用户示例（未设置用户名和密码），具有 `NOSUPERUSER` 权限。
+
+- **`{ name: "", password: "", flags: "NOLOGIN" }`**
+  - 创建一个不可登录用户示例（未设置用户名和密码），具有 `NOLOGIN` 权限。
+
+总结：
+这段配置定义了要创建的PostgreSQL用户列表，包括用户名、密码、权限和角色。根据需要取消注释并填写具体的用户信息。
 postgresql_users:
   - { name: "{{ pgbouncer_auth_username }}", password: "{{ pgbouncer_auth_password }}", flags: "LOGIN", role: "" }
 #  - { name: "monitoring_auth_username", password: "monitoring_user_password", flags: "LOGIN", role: "pg_monitor" } # monitoring Service Account
