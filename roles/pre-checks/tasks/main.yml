@@ -6,7 +6,7 @@
   delegate_to: localhost
   when:
     - ansible_version.full is version(minimal_ansible_version, '<')
-
+# 检查是否在支持的版本
 - name: Checking Linux distribution
   ansible.builtin.fail:
     msg: "{{ ansible_distribution }} is not supported"
