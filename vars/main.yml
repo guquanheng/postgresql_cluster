@@ -164,6 +164,7 @@ vip_manager_mask: "24"  # netmask for the virtual ip
 
 
 # DCS (Distributed Consensus Store)
+# 是否部署新的etcd集群
 dcs_exists: false  # or 'true' if you don't want to deploy a new etcd cluster
 dcs_type: "etcd"  # or 'consul'
 
