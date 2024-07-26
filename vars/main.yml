@@ -547,6 +547,36 @@ postgresql_pgpass:
 
 
 # PgBouncer parameters
+这段配置文件用于设置PgBouncer连接池的参数。以下是每个参数的详细解释：
+
+- **`pgbouncer_install`**: 是否安装和配置PgBouncer服务。`true` 表示安装，`false` 表示不安装。
+- **`pgbouncer_processes`**: 使用的PgBouncer进程数。多个进程使用`so_reuseport`选项以提高性能。
+- **`pgbouncer_conf_dir`**: PgBouncer配置文件目录。
+- **`pgbouncer_log_dir`**: PgBouncer日志文件目录。
+- **`pgbouncer_listen_addr`**: PgBouncer监听的IP地址，`0.0.0.0` 表示监听所有接口，也可以使用 `{{ inventory_hostname }}` 监听特定IP地址。
+- **`pgbouncer_listen_port`**: PgBouncer监听的端口号。
+- **`pgbouncer_max_client_conn`**: 允许的最大客户端连接数。
+- **`pgbouncer_max_db_connections`**: 每个数据库的最大连接数。
+- **`pgbouncer_max_prepared_statements`**: 预处理语句的最大数量。
+- **`pgbouncer_default_pool_size`**: 每个数据库池的默认连接数。
+- **`pgbouncer_query_wait_timeout`**: 查询等待超时时间（秒）。
+- **`pgbouncer_default_pool_mode`**: 默认池模式，可以是`session`、`transaction`或`statement`。
+- **`pgbouncer_admin_users`**: 允许更改设置的管理员用户列表，使用变量`{{ patroni_superuser_username }}`。
+- **`pgbouncer_stats_users`**: 允许使用SHOW命令的统计用户列表，使用变量`{{ patroni_superuser_username }}`。
+- **`pgbouncer_ignore_startup_parameters`**: 忽略的启动参数列表。
+- **`pgbouncer_auth_type`**: 认证类型，使用变量`{{ postgresql_password_encryption_algorithm }}`。
+- **`pgbouncer_auth_user`**: 是否使用数据库中的用户列表进行认证。`true`表示使用，`false`表示通过`userlist.txt`管理用户列表。
+- **`pgbouncer_auth_username`**: 可以通过`user_search`函数查询数据库的用户。
+- **`pgbouncer_auth_password`**: 认证用户的密码（请更改默认密码）。
+- **`pgbouncer_auth_dbname`**: 认证数据库名称。
+- **`pgbouncer_client_tls_sslmode`**: 客户端TLS/SSL模式，`disable`表示禁用。
+- **`pgbouncer_client_tls_key_file`**: 客户端TLS密钥文件。
+- **`pgbouncer_client_tls_cert_file`**: 客户端TLS证书文件。
+- **`pgbouncer_client_tls_ca_file`**: 客户端TLS CA文件。
+- **`pgbouncer_client_tls_protocols`**: 客户端TLS协议，允许的值有`tlsv1.0`, `tlsv1.1`, `tlsv1.2`, `tlsv1.3`, `all`, `secure`（`tlsv1.2`和`tlsv1.3`）。
+- **`pgbouncer_client_tls_ciphers`**: 客户端TLS密码套件，允许的值有`default`, `secure`, `fast`, `normal`, `all`（不推荐）。
+
+这些参数可以根据您的具体需求进行调整，以优化PgBouncer的性能和行为。
 pgbouncer_install: true  # or 'false' if you do not want to install and configure the pgbouncer service
 pgbouncer_processes: 1  # Number of pgbouncer processes to be used. Multiple processes use the so_reuseport option for better performance.
 pgbouncer_conf_dir: "/etc/pgbouncer"
