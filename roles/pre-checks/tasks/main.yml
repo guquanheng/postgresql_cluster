@@ -1,5 +1,5 @@
 ---
-
+# ansible 版本要求
 - name: Checking ansible version
   ansible.builtin.fail:
     msg: "Ansible version must be {{ minimal_ansible_version }} or higher"
