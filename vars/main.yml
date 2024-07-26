@@ -19,6 +19,18 @@ patroni_superuser_password: "postgres-pass"  # please change password
 patroni_replication_username: "replicator"
 patroni_replication_password: "replicator-pass"  # please change password
 
+这段配置看起来是用于设置数据库的同步复制模式，以下是每个配置项的详细解释：
+
+- **`synchronous_mode: false`**:
+  - 设置是否启用同步数据库复制。如果为 `true`，表示启用同步复制；如果为 `false`，表示使用异步复制。
+
+- **`synchronous_mode_strict: false`**:
+  - 设置是否严格同步模式。如果为 `true`，当没有可用的同步副本时，会阻止所有客户端对主数据库的写操作；如果为 `false`，则不会阻止写操作。
+
+- **`synchronous_node_count: 1`**:
+  - 设置同步备用数据库的数量，即需要多少个同步副本来确认写操作。
+
+总结：这段配置主要用于控制数据库的同步复制模式及其行为，确保数据一致性和可用性。
 synchronous_mode: false  # or 'true' for enable synchronous database replication
 synchronous_mode_strict: false  # if 'true' then block all client writes to the master, when a synchronous replica is not available
 synchronous_node_count: 1  # number of synchronous standby databases
