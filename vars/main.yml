@@ -320,6 +320,23 @@ postgresql_users:
 #  - { name: "", password: "", flags: "NOLOGIN" }
 
 # (optional) list of databases to be created (if not already exists)
+这段配置文件用于定义要在PostgreSQL中创建的数据库列表。以下是每个配置项的详细解释：
+
+- **`postgresql_databases: []`**:
+  - 数据库列表，目前为空。
+
+- **数据库配置示例**：
+  - **`{ db: "mydatabase", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user" }`**:
+    - 创建一个名为 `mydatabase` 的数据库，使用 `UTF8` 编码，区域设置为 `ru_RU.UTF-8`，数据库所有者为 `mydb-user`。
+
+  - **`{ db: "mydatabase2", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user", conn_limit: "50" }`**:
+    - 创建一个名为 `mydatabase2` 的数据库，使用 `UTF8` 编码，区域设置为 `ru_RU.UTF-8`，数据库所有者为 `mydb-user`，连接限制为 `50`。
+
+  - **`{ db: "", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "" }`**:
+    - 示例配置（未启用），使用 `UTF8` 编码，区域设置为 `en_US.UTF-8`，未指定数据库名和所有者。
+
+总结：
+这段配置用于定义要创建的PostgreSQL数据库的详细信息，包括数据库名、编码、区域设置、所有者和连接限制。根据需要取消注释并填写具体的数据库信息。
 postgresql_databases: []
 #  - { db: "mydatabase", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user" }
 #  - { db: "mydatabase2", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user", conn_limit: "50" }
