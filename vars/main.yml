@@ -3,9 +3,7 @@
 # Proxy variables (optional) for download packages using a proxy server
 proxy_env:   # yamllint disable rule:braces
   http_proxy: http://192.168.8.119:7890
-#  http_proxy: http://10.128.64.9:3128
-#  https_proxy: http://10.128.64.9:3128
-# ---------------------------------------------------------------------
+
 
 # Cluster variables
 cluster_vip: ""  # IP address for client access to the databases in the cluster (optional).
@@ -370,9 +368,6 @@ pgbouncer_pools:
 #  - { name: "", dbname: "", pool_parameters: "" }
 #  - { name: "", dbname: "", pool_parameters: "" }
 
-。
-
-这些参数可以根据您的需求进行调整，以优化Patroni集群的性能和行为。
 patroni_restapi_listen_addr: "0.0.0.0" # Listen on all interfaces. Or use "{{ inventory_hostname }}" to listen on a specific IP address.
 patroni_restapi_port: 8008
 patroni_restapi_username: "patroni"
