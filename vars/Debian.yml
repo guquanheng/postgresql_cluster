@@ -1,7 +1,7 @@
 ---
 
 # PostgreSQL variables
-postgresql_cluster_name: "main"
+postgresql_cluster_name: "gongji"
 # You can specify custom data dir path. Example: "/pgdata/{{ postgresql_version }}/main"
 postgresql_data_dir: "/data/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
 # You can specify custom WAL dir path. Example: "/pgwal/{{ postgresql_version }}/pg_wal"
