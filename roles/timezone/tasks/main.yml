@@ -10,11 +10,15 @@
       environment: "{{ proxy_env | default({}) }}"
       when: installation_method == "repo"
 
-    - name: Set timezone to "{{ timezone }}"
+    - name: '037 | 设置时区'
       become: true
       become_method: sudo
       community.general.timezone:
         name: "{{ timezone }}"
+    - name: "finaly | 测试结束"
+      fail:
+        msg: "完成测试"
+      when: 1 == 1
   when: timezone is defined and timezone | length > 0
   tags: timezone
 
