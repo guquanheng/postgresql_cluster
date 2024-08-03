@@ -3,7 +3,7 @@
 - name: Make sure handlers are flushed immediately
   ansible.builtin.meta: flush_handlers
 
-- name: Make sure the unzip/tar packages are present
+- name: '042 | 安装依赖包'
   ansible.builtin.package:
     name:
       - unzip
@@ -20,7 +20,7 @@
   tags: etcd, etcd_install
 
 - block:  # install etcd package from repo
-    - name: Download "etcd" package
+    - name: '043 | 下载etcd安装包'
       ansible.builtin.get_url:
         url: "{{ item }}"
         dest: /tmp/
@@ -30,7 +30,7 @@
         - "{{ etcd_package_repo }}"
       environment: "{{ proxy_env | default({}) }}"
 
-    - name: Extract "etcd" into /tmp
+    - name: '044 | 解压etcd安装包'
       ansible.builtin.unarchive:
         src: "/tmp/{{ etcd_package_repo | basename }}"
         dest: /tmp/
@@ -38,7 +38,7 @@
           - --no-same-owner
         remote_src: true
 
-    - name: Copy "etcd" and "etcdctl" binary files to /usr/local/bin/
+    - name: '045 | 复制 "etcd" 和 "etcdctl" 二进制文件到 /usr/local/bin/'
       ansible.builtin.copy:
         src: "/tmp/{{ etcd_package_repo.split('.tar.gz')[0] | basename }}/{{ item }}"
         dest: /usr/local/bin/
@@ -54,14 +54,14 @@
   tags: etcd, etcd_install
 
 - block:  # install etcd package from file
-    - name: "test01 下载etcd安装包"
+    - name: "043 |  下载etcd安装包"
       ansible.builtin.unarchive:
         src: "{{ etcd_package_file }}"
         dest: /tmp/
         extra_opts:
           - --no-same-owner
 
-    - name: Copy "etcd" and "etcdctl" binary files to /usr/local/bin/
+    - name:  '044 | 复制 "etcd" 和 "etcdctl" 二进制文件到 /usr/local/bin/'
       ansible.builtin.copy:
         src: "/tmp/{{ etcd_package_file.split('.tar.gz')[0] | basename }}/{{ item }}"
         dest: /usr/local/bin/
@@ -76,20 +76,20 @@
     - not ansible_check_mode
   tags: etcd, etcd_install
 
-- name: Add etcd user
+- name: '046 | 创建 etcd 用户和组'
   ansible.builtin.user:
     name: etcd
     shell: /usr/sbin/nologin
     home: "{{ etcd_data_dir }}"
   tags: etcd, etcd_conf
 
-- name: Create etcd conf directory
+- name: '047 | 创建 etcd 配置文件目录'
   ansible.builtin.file:
     path: /etc/etcd
     state: directory
   tags: etcd, etcd_conf
 
-- name: Create etcd data directory
+- name: '048 | 创建 etcd 数据目录'
   ansible.builtin.file:
     path: "{{ etcd_data_dir }}"
     state: directory
@@ -97,19 +97,19 @@
     mode: "0700"
   tags: etcd, etcd_conf
 
-- name: Generate conf file "/etc/etcd/etcd.conf"
+- name: '049 | 创建 etcd 配置目录'
   ansible.builtin.template:
     src: templates/etcd.conf.j2
     dest: /etc/etcd/etcd.conf
   tags: etcd, etcd_conf
 
-- name: Copy systemd service file
+- name: '050 | 创建 etcd 服务文件'
   ansible.builtin.template:
     src: templates/etcd.service.j2
     dest: /etc/systemd/system/etcd.service
   tags: etcd, etcd_conf
 
-- name: Enable and start etcd service
+- name: '051 | 启动 etcd 服务'
   ansible.builtin.systemd:
     daemon_reload: true
     name: etcd
@@ -117,7 +117,7 @@
     state: started
   tags: etcd, etcd_start
 
-- name: Wait for port 2379 to become open on the host
+- name: '052 | 等待 etcd 服务启动'
   ansible.builtin.wait_for:
     port: 2379
     host: 127.0.0.1
@@ -128,7 +128,7 @@
   tags: etcd, etcd_start
 
 - block:
-    - name: Wait until the etcd cluster is healthy
+    - name: '053 | 检查 etcd 集群状态'
       ansible.builtin.command: >
         /usr/local/bin/etcdctl endpoint health
         --endpoints=http://{{ inventory_hostname }}:2379
@@ -143,7 +143,7 @@
       changed_when: false
       ignore_errors: false
 
-    - name: cluster health
+    - name: '054 | 显示 etcd 集群状态'
       ansible.builtin.debug:
         msg: >
           {{ etcd_health_result.stdout
@@ -151,5 +151,8 @@
           else etcd_health_result.stderr }}
   when: not ansible_check_mode
   tags: etcd, etcd_start, etcd_status
-
+- name: "finaly | 测试结束"
+  fail:
+    msg: "完成测试"
+  when: 1 == 1
 ...

@@ -77,5 +77,4 @@
     - role: sysctl
     - role: timezone
     - role: ntp
-
     - role: etcd

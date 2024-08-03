@@ -56,8 +56,5 @@
   when: ntp_enabled is defined and ntp_enabled|bool
   tags: ntp
 
-- name: "finaly | 测试结束"
-  fail:
-    msg: "完成测试"
-  when: 1 == 1
+
 ...
