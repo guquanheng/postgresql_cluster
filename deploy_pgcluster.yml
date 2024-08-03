@@ -186,10 +186,7 @@
     - role: hostname
     - role: resolv_conf
     - role: etc_hosts
-    - name: "finaly | 测试结束"
-      fail:
-        msg: "完成测试"
-      when: 1 == 1
+    
     - role: add-repository
     - role: packages
     - role: sudo
