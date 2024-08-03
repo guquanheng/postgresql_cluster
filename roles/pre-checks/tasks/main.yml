@@ -1,30 +1,30 @@
 ---
 # ansible 版本要求
-- name: Checking ansible version
+- name: "006 | 检查 Ansible 版本"
   ansible.builtin.fail:
     msg: "Ansible version must be {{ minimal_ansible_version }} or higher"
   delegate_to: localhost
   when:
     - ansible_version.full is version(minimal_ansible_version, '<')
 # 检查是否在支持的版本
-- name: Checking Linux distribution
+- name: "007 | 检查操作系统是否支持"
   ansible.builtin.fail:
     msg: "{{ ansible_distribution }} is not supported"
   when: ansible_distribution not in os_valid_distributions
 
-- name: Checking version of OS Linux
+- name: "008 | 检查操作系统版本是否支持"
   ansible.builtin.fail:
     msg: "{{ ansible_distribution_version }} of {{ ansible_distribution }} is not supported"
   when: ansible_distribution_version is version_compare(os_minimum_versions[ansible_distribution], '<')
 
-- name: Perform pre-checks for timescaledb
+- name: "009 | 检查操作系统是否支持时序数据库并导入,共绩项目不使用"
   ansible.builtin.import_tasks: timescaledb.yml
   when:
     - enable_timescale is defined
     - enable_timescale | bool
     - inventory_hostname in groups['postgres_cluster']
 
-- name: Perform pre-checks for pgbouncer
+- name: "010 | 检查操作系统是否支持pgbouncer并导入"
   ansible.builtin.import_tasks: pgbouncer.yml
   when:
     - pgbouncer_install is defined
