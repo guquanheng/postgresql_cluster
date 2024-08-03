@@ -85,11 +85,8 @@
       delay: 5
       retries: 3
       when: ansible_os_family == "Debian"
-    - name: "finaly | 测试结束"
-      fail:
-        msg: "完成测试"
-      when: 1 == 1
-    - name: Make sure the gnupg and apt-transport-https packages are present
+    
+    - name: '021 | 安装依赖包 gnupg apt-transport-https'
       ansible.builtin.apt:
         pkg:
           - gnupg
@@ -102,7 +99,7 @@
       when: ansible_os_family == "Debian"
 
     # Ansible requires the iproute package for network facts to be populated
-    - name: Make sure that the iproute is installed
+    - name: '022 | 安装iproute包'
       ansible.builtin.package:
         name: iproute
         state: present
@@ -112,7 +109,7 @@
       retries: 3
       when: ansible_os_family == "RedHat"
 
-    - name: Make sure that the iproute is installed
+    - name: '022 | 安装iproute2包'
       ansible.builtin.apt:
         name: iproute2
         state: present
@@ -122,11 +119,14 @@
       retries: 3
       when: ansible_os_family == "Debian"
 
-- name: deploy_pgcluster.yml | Deploy etcd cluster
+- name: '023 | 部署etcd集群'
   ansible.builtin.import_playbook: etcd_cluster.yml
   when: not dcs_exists|bool and dcs_type == "etcd"
   tags: etcd
-
+- name: "finaly | 测试结束"
+  fail:
+    msg: "完成测试"
+  when: 1 == 1
 - name: deploy_pgcluster.yml | Deploy Consul
   ansible.builtin.import_playbook: consul.yml
   when: dcs_type == "consul"
