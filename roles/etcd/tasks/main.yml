@@ -151,8 +151,4 @@
           else etcd_health_result.stderr }}
   when: not ansible_check_mode
   tags: etcd, etcd_start, etcd_status
-- name: "finaly | 测试结束"
-  fail:
-    msg: "完成测试"
-  when: 1 == 1
 ...

@@ -124,18 +124,21 @@
   when: not dcs_exists|bool and dcs_type == "etcd"
   tags: etcd
 
-- name: deploy_pgcluster.yml | Deploy Consul
+- name: '053 | 部署consul集群'
   ansible.builtin.import_playbook: consul.yml
   when: dcs_type == "consul"
   tags: consul
 
-- name: deploy_pgcluster.yml | Postgres Cluster Configuration
+- name: '053 | 部署pgcluster'
   hosts: postgres_cluster
   become: true
   become_method: sudo
   gather_facts: true
   any_errors_fatal: true
-
+- name: "finaly | 测试结束"
+  fail:
+    msg: "完成测试"
+  when: 1 == 1
   pre_tasks:
     - name: 安装语言支持
       shell: "apt-get install locales -y && locale-gen en_US.UTF-8 && update-locale"
