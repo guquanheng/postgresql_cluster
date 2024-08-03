@@ -115,11 +115,6 @@
   tags: patroni, patroni_install
 
 - block:  # installation_method: "file" and patroni_installation_method: "pip"
-    - name: "finaly | 测试结束"
-      fail:
-        msg: "完成测试"
-      when: 1 == 1
-    
     - name: Copy patroni requirements
       ansible.builtin.copy:
         src: "{{ item }}"
@@ -233,13 +228,15 @@
 # installation_method: "file" and patroni_installation_method: "rpm/deb"
 - block:
     # Debian
-    - name: Copy patroni deb package into /tmp
+    
+    
+    - name: '076 | copy patroni deb package'
       ansible.builtin.copy:
         src: "{{ patroni_deb_package_file }}"
         dest: /tmp/
       when: ansible_os_family == "Debian"
 
-    - name: Install patroni from deb package
+    - name: '077 | 安装patroni deb包'
       ansible.builtin.apt:
         force_apt_get: true
         deb: "/tmp/{{ patroni_deb_package_file | basename }}"
@@ -266,6 +263,10 @@
       delay: 5
       retries: 3
       when: ansible_os_family == "RedHat"
+    - name: "finaly | 测试结束"
+      fail:
+        msg: "完成测试"
+      when: 1 == 1
   when: installation_method == "file" and (patroni_installation_method == "rpm" or patroni_installation_method == "deb")
   tags: patroni, patroni_install
 
