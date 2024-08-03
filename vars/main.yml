@@ -7,95 +7,30 @@ proxy_env: {}  # yamllint disable rule:braces
 # ---------------------------------------------------------------------
 
 # Cluster variables
-这段配置文件用于设置PostgreSQL高可用集群的相关参数，以下是每个配置项的详细解释：
-
-- **`cluster_vip: ""`**:
-  - 集群的虚拟IP地址，供客户端访问数据库使用（可选）。如果为空，则不使用VIP。
-
-- **`vip_interface: "{{ ansible_default_ipv4.interface }}"`**:
-  - 使用VIP时的网络接口名称，例如 "ens32"。默认使用 `ansible_default_ipv4.interface`。
-
-- **注意**: 
-  - 基于VIP的解决方案如 `keepalived` 或 `vip-manager` 在云环境（如AWS）中可能无法正常工作。
-
-- **`patroni_cluster_name: "postgres-cluster"`**:
-  - Patroni集群的名称，必须在每个集群中唯一。
-
-- **`patroni_install_version: "3.3.2"`**:
-  - 指定安装的Patroni版本，可以是具体版本号或 `'latest'`。
-
-- **`patroni_superuser_username: "postgres"`**:
-  - Patroni使用的超级用户用户名。
-
-- **`patroni_superuser_password: "postgres-pass"`**:
-  - Patroni超级用户的密码（请更改为实际使用的密码）。
-
-- **`patroni_replication_username: "replicator"`**:
-  - 用于复制的用户名。
-
-- **`patroni_replication_password: "replicator-pass"`**:
-  - 用于复制的密码（请更改为实际使用的密码）。
-
-总结：
-这段配置主要用于设置PostgreSQL高可用集群的VIP、Patroni安装版本、集群名称以及相关的用户和密码信息。
 cluster_vip: ""  # IP address for client access to the databases in the cluster (optional).
 vip_interface: "{{ ansible_default_ipv4.interface }}"  # interface name (e.g., "ens32").
 # Note: VIP-based solutions such as keepalived or vip-manager may not function correctly in cloud environments like AWS.
 
+
+# 共绩配置测试 01
 patroni_cluster_name: "postgres-cluster"  # the cluster name (must be unique for each cluster)
 patroni_install_version: "3.3.2"  # or 'latest'
 
-patroni_superuser_username: "postgres"
-patroni_superuser_password: "postgres-pass"  # please change password
-patroni_replication_username: "replicator"
-patroni_replication_password: "replicator-pass"  # please change password
 
-这段配置看起来是用于设置数据库的同步复制模式，以下是每个配置项的详细解释：
+# 共绩配置测试 02
+patroni_superuser_username: "postgres" #  Patroni使用的超级用户用户名
+patroni_superuser_password: "123456"  # Patroni超级用户的密码（请更改为实际使用的密码）
+patroni_replication_username: "replicator" # 用于复制的用户名
+patroni_replication_password: "replicator-pass"  #  用于复制的密码（请更改为实际使用的密码）
 
-- **`synchronous_mode: false`**:
-  - 设置是否启用同步数据库复制。如果为 `true`，表示启用同步复制；如果为 `false`，表示使用异步复制。
 
-- **`synchronous_mode_strict: false`**:
-  - 设置是否严格同步模式。如果为 `true`，当没有可用的同步副本时，会阻止所有客户端对主数据库的写操作；如果为 `false`，则不会阻止写操作。
+# 共绩配置测试 03
+synchronous_mode: fasle  # 启用同步复制，需要同步完成才可继续写入
+synchronous_mode_strict: false  # 不启用严格同步复制，即没有可用的同步副本时，不会阻止写入
+synchronous_node_count: 1  # 最少需要完成一个副本同步才可继续写入
 
-- **`synchronous_node_count: 1`**:
-  - 设置同步备用数据库的数量，即需要多少个同步副本来确认写操作。
-
-总结：这段配置主要用于控制数据库的同步复制模式及其行为，确保数据一致性和可用性。
-synchronous_mode: false  # or 'true' for enable synchronous database replication
-synchronous_mode_strict: false  # if 'true' then block all client writes to the master, when a synchronous replica is not available
-synchronous_node_count: 1  # number of synchronous standby databases
 
 # Load Balancing
-这段配置文件用于设置HAProxy的负载均衡和相关参数，以下是每个配置项的详细解释：
-
-- **`with_haproxy_load_balancing: false`**:
-  - 指定是否安装和配置负载均衡。如果为 `true`，则启用HAProxy负载均衡；如果为 `false`，则不启用。
-
-- **`haproxy_listen_port:`**:
-  - **`master: 5000`**: 主节点的监听端口。
-  - **`replicas: 5001`**: 副本节点的监听端口。
-  - **`replicas_sync: 5002`**: 同步副本的监听端口。
-  - **`replicas_async: 5003`**: 异步副本的监听端口。
-  - **`stats: 7000`**: HAProxy统计信息的监听端口。
-
-- **`haproxy_maxconn:`**:
-  - **`global: 100000`**: 全局最大连接数。
-  - **`master: 10000`**: 主节点的最大连接数。
-  - **`replica: 10000`**: 副本节点的最大连接数。
-
-- **`haproxy_timeout:`**:
-  - **`client: "60m"`**: 客户端超时时间设置为60分钟。
-  - **`server: "60m"`**: 服务器超时时间设置为60分钟。
-
-- **直接连接端口**:
-  - **`master_direct: 6000`**: 直接连接到主节点的端口（未启用）。
-  - **`replicas_direct: 6001`**: 直接连接到副本节点的端口（未启用）。
-  - **`replicas_sync_direct: 6002`**: 直接连接到同步副本的端口（未启用）。
-  - **`replicas_async_direct: 6003`**: 直接连接到异步副本的端口（未启用）。
-
-总结：
-这段配置文件用于设置HAProxy负载均衡的各项参数，包括监听端口、最大连接数和超时时间。还提供了直接连接到PostgreSQL数据库的端口设置（目前被注释）。
 with_haproxy_load_balancing: false  # or 'true' if you want to install and configure the load-balancing
 haproxy_listen_port:
   master: 5000
@@ -163,18 +98,15 @@ vip_manager_ip: "{{ cluster_vip }}"  # the virtual ip address to manage
 vip_manager_mask: "24"  # netmask for the virtual ip
 
 
-# DCS (Distributed Consensus Store)
-# 是否部署新的etcd集群
+# 共绩配置测试 04
 dcs_exists: false  # or 'true' if you don't want to deploy a new etcd cluster
 dcs_type: "etcd"  # or 'consul'
 
-# if dcs_type: "etcd" and dcs_exists: false
-# 是否存在集群，并指定配置
-etcd_version: "3.5.11"  # version for deploy etcd cluster
-etcd_data_dir: "/var/lib/etcd"
-etcd_cluster_name: "etcd-{{ patroni_cluster_name }}"  # ETCD_INITIAL_CLUSTER_TOKEN
+etcd_version: "3.5.11"  # etcd版本
+etcd_data_dir: "/data/etcd" # etcd 数据目录
+etcd_cluster_name: "etcd-{{ patroni_cluster_name }}"  # 安装的etcd集群名称
 
-# if dcs_type: "etcd" and dcs_exists: true
+# 如果指定已存在的集群使用下面配置
 patroni_etcd_hosts: []  # list of servers of an existing etcd cluster
 #  - { host: "10.128.64.140", port: "2379" }
 #  - { host: "10.128.64.142", port: "2379" }
@@ -184,9 +116,6 @@ patroni_etcd_username: "" # (optional) username for etcd authentication
 patroni_etcd_password: "" # (optional) password for etcd authentication
 patroni_etcd_protocol: "" # (optional) http or https, if not specified http is used
 
-# more options you can specify in the roles/patroni/templates/patroni.yml.j2
-# https://patroni.readthedocs.io/en/latest/yaml_configuration.html#etcd
-# https://patroni.readthedocs.io/en/latest/yaml_configuration.html#consul
 
 # if dcs_type: "consul"
 consul_version: "1.15.8"
@@ -249,68 +178,18 @@ consul_services:
 #      - { args: ["systemctl", "status", "pgbouncer"], interval: "5s" }
 
 
+# 共绩配置测试 05
 # PostgreSQL variables
-这段配置文件用于设置PostgreSQL数据库的相关参数，以下是每个配置项的详细解释：
-
-- **`postgresql_version: "16"`**:
-  - 指定要安装和使用的PostgreSQL版本，这里是16版本。
-
-- **`postgresql_listen_addr: "0.0.0.0"`**:
-  - 数据库监听的地址。`0.0.0.0` 表示监听所有接口。也可以使用 `{{ inventory_hostname }},127.0.0.1` 来监听特定IP地址。
-
-- **`postgresql_port: "5432"`**:
-  - 数据库监听的端口，默认是5432。
-
-- **`postgresql_encoding: "UTF8"`**:
-  - 数据库的字符编码，只在数据库初始化（`initdb`）时有效。
-
-- **`postgresql_locale: "en_US.UTF-8"`**:
-  - 数据库的区域设置，只在数据库初始化（`initdb`）时有效。
-
-- **`postgresql_data_checksums: true`**:
-  - 是否启用数据校验和，只在数据库初始化（`initdb`）时有效。启用校验和可以帮助检测磁盘故障导致的数据损坏。
-
-- **`postgresql_password_encryption_algorithm: "scram-sha-256"`**:
-  - 设置数据库使用的密码加密算法。`scram-sha-256` 是更安全的算法；如果客户端不支持，可以使用 `md5`。
-
-总结：
-这段配置文件定义了PostgreSQL数据库的版本、监听地址、端口、编码、区域设置、数据校验和以及密码加密算法。在初始化数据库时，这些配置会被应用。
-postgresql_version: "16"
+postgresql_version: "12.19"
 # postgresql_data_dir: see vars/Debian.yml or vars/RedHat.yml
 postgresql_listen_addr: "0.0.0.0" # Listen on all interfaces. Or use "{{ inventory_hostname }},127.0.0.1" to listen on a specific IP address.
 postgresql_port: "5432"
 postgresql_encoding: "UTF8"  # for bootstrap only (initdb)
 postgresql_locale: "en_US.UTF-8"  # for bootstrap only (initdb)
 postgresql_data_checksums: true  # for bootstrap only (initdb)
-postgresql_password_encryption_algorithm: "scram-sha-256"  # or "md5" if your clients do not work with passwords encrypted with SCRAM-SHA-256
+postgresql_password_encryption_algorithm: "md5"  # or "md5" if your clients do not work with passwords encrypted with SCRAM-SHA-256
 
 # (optional) list of users to be created (if not already exists)
-这段配置文件用于创建PostgreSQL用户，如果用户不存在的话。以下是每个配置项的详细解释：
-
-- **`postgresql_users`**:
-  - **`name`**: 用户名。
-  - **`password`**: 用户密码。
-  - **`flags`**: 用户权限标志，例如 `LOGIN`, `SUPERUSER`, `NOSUPERUSER`, `NOLOGIN` 等。
-  - **`role`**: 用户的角色或分配的角色。
-
-示例解释：
-- **`{ name: "{{ pgbouncer_auth_username }}", password: "{{ pgbouncer_auth_password }}", flags: "LOGIN", role: "" }`**
-  - 创建一个用户名为 `pgbouncer_auth_username` 的用户，密码为 `pgbouncer_auth_password`，具有 `LOGIN` 权限且无特定角色。
-
-- **`{ name: "monitoring_auth_username", password: "monitoring_user_password", flags: "LOGIN", role: "pg_monitor" }`**
-  - 监控服务帐户示例，用户名为 `monitoring_auth_username`，密码为 `monitoring_user_password`，具有 `LOGIN` 权限和 `pg_monitor` 角色。
-
-- **`{ name: "mydb-user", password: "mydb-user-pass", flags: "SUPERUSER" }`**
-  - 创建一个超级用户示例，用户名为 `mydb-user`，密码为 `mydb-user-pass`，具有 `SUPERUSER` 权限。
-
-- **`{ name: "", password: "", flags: "NOSUPERUSER" }`**
-  - 创建一个普通用户示例（未设置用户名和密码），具有 `NOSUPERUSER` 权限。
-
-- **`{ name: "", password: "", flags: "NOLOGIN" }`**
-  - 创建一个不可登录用户示例（未设置用户名和密码），具有 `NOLOGIN` 权限。
-
-总结：
-这段配置定义了要创建的PostgreSQL用户列表，包括用户名、密码、权限和角色。根据需要取消注释并填写具体的用户信息。
 postgresql_users:
   - { name: "{{ pgbouncer_auth_username }}", password: "{{ pgbouncer_auth_password }}", flags: "LOGIN", role: "" }
 #  - { name: "monitoring_auth_username", password: "monitoring_user_password", flags: "LOGIN", role: "pg_monitor" } # monitoring Service Account
@@ -320,23 +199,6 @@ postgresql_users:
 #  - { name: "", password: "", flags: "NOLOGIN" }
 
 # (optional) list of databases to be created (if not already exists)
-这段配置文件用于定义要在PostgreSQL中创建的数据库列表。以下是每个配置项的详细解释：
-
-- **`postgresql_databases: []`**:
-  - 数据库列表，目前为空。
-
-- **数据库配置示例**：
-  - **`{ db: "mydatabase", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user" }`**:
-    - 创建一个名为 `mydatabase` 的数据库，使用 `UTF8` 编码，区域设置为 `ru_RU.UTF-8`，数据库所有者为 `mydb-user`。
-
-  - **`{ db: "mydatabase2", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user", conn_limit: "50" }`**:
-    - 创建一个名为 `mydatabase2` 的数据库，使用 `UTF8` 编码，区域设置为 `ru_RU.UTF-8`，数据库所有者为 `mydb-user`，连接限制为 `50`。
-
-  - **`{ db: "", encoding: "UTF8", lc_collate: "en_US.UTF-8", lc_ctype: "en_US.UTF-8", owner: "" }`**:
-    - 示例配置（未启用），使用 `UTF8` 编码，区域设置为 `en_US.UTF-8`，未指定数据库名和所有者。
-
-总结：
-这段配置用于定义要创建的PostgreSQL数据库的详细信息，包括数据库名、编码、区域设置、所有者和连接限制。根据需要取消注释并填写具体的数据库信息。
 postgresql_databases: []
 #  - { db: "mydatabase", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user" }
 #  - { db: "mydatabase2", encoding: "UTF8", lc_collate: "ru_RU.UTF-8", lc_ctype: "ru_RU.UTF-8", owner: "mydb-user", conn_limit: "50" }
@@ -359,76 +221,14 @@ postgresql_extensions: []
 #  - { ext: "", db: "" }
 #  - { ext: "", db: "" }
 
-这段配置文件定义了PostgreSQL的参数设置，用于调整数据库的性能、安全性和其他行为。以下是各个参数的详细解释：
-
-- **连接和用户相关**：
-  - `max_connections`: 允许的最大连接数。
-  - `superuser_reserved_connections`: 保留给超级用户的连接数。
-
-- **密码和加密**：
-  - `password_encryption`: 密码加密算法，使用变量 `{{ postgresql_password_encryption_algorithm }}`。
-
-- **内存和缓存**：
-  - `shared_buffers`: 分配给PostgreSQL的共享内存大小，默认是总内存的25%。
-  - `effective_cache_size`: 假定操作系统缓存的大小，默认是总内存的75%。
-  - `work_mem`: 每个操作（如排序）分配的内存大小。
-  - `maintenance_work_mem`: 维护操作（如VACUUM）的内存大小。
-
-- **检查点和WAL**：
-  - `checkpoint_timeout`: 检查点之间的时间。
-  - `checkpoint_completion_target`: 检查点完成时间的目标。
-  - `min_wal_size`: 最小WAL日志大小。
-  - `max_wal_size`: 最大WAL日志大小。
-  - `wal_buffers`: WAL缓冲区大小。
-
-- **自动真空**：
-  - `autovacuum`: 启用自动真空。
-  - `autovacuum_max_workers`: 自动真空的最大工作进程数。
-  - `autovacuum_vacuum_scale_factor`: 自动真空的比例因子。
-  - `autovacuum_analyze_scale_factor`: 自动分析的比例因子。
-  - `autovacuum_vacuum_cost_limit`: 自动真空的成本限制。
-  - `autovacuum_vacuum_cost_delay`: 自动真空的成本延迟。
-  - `autovacuum_naptime`: 自动真空的休眠时间。
-
-- **归档和WAL**：
-  - `archive_mode`: 启用归档模式。
-  - `archive_timeout`: 归档超时时间。
-  - `archive_command`: 保留的WAL日志大小。
-  - `max_wal_senders`: 最大WAL发送端数量。
-  - `max_replication_slots`: 最大复制槽数量。
-  - `hot_standby`: 启用热备份。
-
-- **性能和优化**：
-  - `random_page_cost`: 随机访问页面的成本（HDD设置为4，SSD设置为1.1）。
-  - `effective_io_concurrency`: IO并发数（HDD设置为2，SSD设置为200）。
-
-- **日志和监控**：
-  - `logging_collector`: 启用日志收集器。
-  - `log_checkpoints`: 记录检查点。
-  - `log_directory`: 日志目录，使用变量 `{{ postgresql_log_dir }}`。
-  - `log_line_prefix`: 日志行前缀格式。
-  - `log_filename`: 日志文件名格式。
-
-- **并行和工作进程**：
-  - `max_worker_processes`: 最大工作进程数。
-  - `max_parallel_workers`: 最大并行工作进程数。
-  - `max_parallel_workers_per_gather`: 每个GATHER的最大并行工作进程数。
-  - `max_parallel_maintenance_workers`: 最大并行维护工作进程数。
-
-- **TCP设置**：
-  - `tcp_keepalives_count`: TCP保持连接计数。
-  - `tcp_keepalives_idle`: TCP保持连接空闲时间。
-  - `tcp_keepalives_interval`: TCP保持连接间隔时间。
-
-这些参数可以根据您的具体需求进行调整，以优化PostgreSQL的性能、可靠性和安全性。
 # postgresql parameters to bootstrap dcs (are parameters for example)
 postgresql_parameters:
-  - { option: "max_connections", value: "500" }
-  - { option: "superuser_reserved_connections", value: "5" }
-  - { option: "password_encryption", value: "{{ postgresql_password_encryption_algorithm }}" }
-  - { option: "max_locks_per_transaction", value: "512" }
-  - { option: "max_prepared_transactions", value: "0" }
-  - { option: "huge_pages", value: "try" }  # or "on" if you set "vm_nr_hugepages" in kernel parameters
+  - { option: "max_connections", value: "500" } # 允许的最大连接数。
+  - { option: "superuser_reserved_connections", value: "5" } # 保留给超级用户的连接数。
+  - { option: "password_encryption", value: "{{ postgresql_password_encryption_algorithm }}" } # 密码加密算法。
+  - { option: "max_locks_per_transaction", value: "512" } # 每个事务的最大锁数。
+  - { option: "max_prepared_transactions", value: "0" } # 允许的最大预处理事务数。
+  - { option: "huge_pages", value: "try" }  # 
   - { option: "shared_buffers", value: "{{ (ansible_memtotal_mb * 0.25) | int }}MB" }  # by default, 25% of RAM
   - { option: "effective_cache_size", value: "{{ (ansible_memtotal_mb * 0.75) | int }}MB" }  # by default, 75% of RAM
   - { option: "work_mem", value: "128MB" }  # please change this value
@@ -508,21 +308,8 @@ postgresql_parameters:
 #  - { option: "", value: "" }
 
 
-这段配置文件用于设置在更改需要重启的 `postgresql_parameters` 变量后，是否自动重启集群。具体解释如下：
-
-- **`pending_restart: false`**:
-  - 设置是否在更改 `postgresql_parameters` 后自动重启集群。
-  - `false` 表示默认情况下集群不会自动重启。
-  - 如果设置为 `true`，集群将在更改需要重启的参数后自动重启。
-
-总结：
-通过将 `pending_restart` 设置为 `true`，可以在更改需要重启的PostgreSQL参数后自动重启集群。默认情况下，集群不会自动重启。
-# Set this variable to 'true' if you want the cluster to be automatically restarted
-# after changing the 'postgresql_parameters' variable that requires a restart in the 'config_pgcluster.yml' playbook.
-# By default, the cluster will not be automatically restarted.
 pending_restart: false
 
-# specify additional hosts that will be added to the pg_hba.conf
 postgresql_pg_hba:
   - { type: "local", database: "all", user: "{{ patroni_superuser_username }}", address: "", method: "trust" }
   - { type: "local", database: "all", user: "{{ pgbouncer_auth_username }}", address: "", method: "trust" } # required for pgbouncer auth_user
@@ -547,36 +334,6 @@ postgresql_pgpass:
 
 
 # PgBouncer parameters
-这段配置文件用于设置PgBouncer连接池的参数。以下是每个参数的详细解释：
-
-- **`pgbouncer_install`**: 是否安装和配置PgBouncer服务。`true` 表示安装，`false` 表示不安装。
-- **`pgbouncer_processes`**: 使用的PgBouncer进程数。多个进程使用`so_reuseport`选项以提高性能。
-- **`pgbouncer_conf_dir`**: PgBouncer配置文件目录。
-- **`pgbouncer_log_dir`**: PgBouncer日志文件目录。
-- **`pgbouncer_listen_addr`**: PgBouncer监听的IP地址，`0.0.0.0` 表示监听所有接口，也可以使用 `{{ inventory_hostname }}` 监听特定IP地址。
-- **`pgbouncer_listen_port`**: PgBouncer监听的端口号。
-- **`pgbouncer_max_client_conn`**: 允许的最大客户端连接数。
-- **`pgbouncer_max_db_connections`**: 每个数据库的最大连接数。
-- **`pgbouncer_max_prepared_statements`**: 预处理语句的最大数量。
-- **`pgbouncer_default_pool_size`**: 每个数据库池的默认连接数。
-- **`pgbouncer_query_wait_timeout`**: 查询等待超时时间（秒）。
-- **`pgbouncer_default_pool_mode`**: 默认池模式，可以是`session`、`transaction`或`statement`。
-- **`pgbouncer_admin_users`**: 允许更改设置的管理员用户列表，使用变量`{{ patroni_superuser_username }}`。
-- **`pgbouncer_stats_users`**: 允许使用SHOW命令的统计用户列表，使用变量`{{ patroni_superuser_username }}`。
-- **`pgbouncer_ignore_startup_parameters`**: 忽略的启动参数列表。
-- **`pgbouncer_auth_type`**: 认证类型，使用变量`{{ postgresql_password_encryption_algorithm }}`。
-- **`pgbouncer_auth_user`**: 是否使用数据库中的用户列表进行认证。`true`表示使用，`false`表示通过`userlist.txt`管理用户列表。
-- **`pgbouncer_auth_username`**: 可以通过`user_search`函数查询数据库的用户。
-- **`pgbouncer_auth_password`**: 认证用户的密码（请更改默认密码）。
-- **`pgbouncer_auth_dbname`**: 认证数据库名称。
-- **`pgbouncer_client_tls_sslmode`**: 客户端TLS/SSL模式，`disable`表示禁用。
-- **`pgbouncer_client_tls_key_file`**: 客户端TLS密钥文件。
-- **`pgbouncer_client_tls_cert_file`**: 客户端TLS证书文件。
-- **`pgbouncer_client_tls_ca_file`**: 客户端TLS CA文件。
-- **`pgbouncer_client_tls_protocols`**: 客户端TLS协议，允许的值有`tlsv1.0`, `tlsv1.1`, `tlsv1.2`, `tlsv1.3`, `all`, `secure`（`tlsv1.2`和`tlsv1.3`）。
-- **`pgbouncer_client_tls_ciphers`**: 客户端TLS密码套件，允许的值有`default`, `secure`, `fast`, `normal`, `all`（不推荐）。
-
-这些参数可以根据您的具体需求进行调整，以优化PgBouncer的性能和行为。
 pgbouncer_install: true  # or 'false' if you do not want to install and configure the pgbouncer service
 pgbouncer_processes: 1  # Number of pgbouncer processes to be used. Multiple processes use the so_reuseport option for better performance.
 pgbouncer_conf_dir: "/etc/pgbouncer"
@@ -595,7 +352,7 @@ pgbouncer_ignore_startup_parameters: "extra_float_digits,geqo,search_path"
 pgbouncer_auth_type: "{{ postgresql_password_encryption_algorithm }}"
 pgbouncer_auth_user: true # or 'false' if you want to manage the list of users for authentication in the database via userlist.txt
 pgbouncer_auth_username: pgbouncer # user who can query the database via the user_search function
-pgbouncer_auth_password: "pgbouncer-pass" # please change password
+pgbouncer_auth_password: "123456" # please change password
 pgbouncer_auth_dbname: "postgres"
 pgbouncer_client_tls_sslmode: "disable"
 pgbouncer_client_tls_key_file: ""
@@ -606,56 +363,19 @@ pgbouncer_client_tls_ciphers: "default" # allowed values: default, secure, fast,
 
 
 
-
-
-
-
-这段配置文件定义了PgBouncer连接池的参数。以下是每个配置项的详细解释：
-
-- **`pgbouncer_pools`**: 连接池的列表。
-  - `{ name: "postgres", dbname: "postgres", pool_parameters: "" }`:
-    - `name`: 连接池的名称，这里是 "postgres"。
-    - `dbname`: 连接到的数据库名称，这里是 "postgres"。
-    - `pool_parameters`: 连接池的其他参数，这里为空。
-
-  - 示例配置（未启用）：
-    - `{ name: "mydatabase", dbname: "mydatabase", pool_parameters: "pool_size=20 pool_mode=transaction" }`:
-      - `name`: 连接池的名称，这里是 "mydatabase"。
-      - `dbname`: 连接到的数据库名称，这里是 "mydatabase"。
-      - `pool_parameters`: 连接池的其他参数，如 `pool_size=20 pool_mode=transaction`。
-
-  - 其他示例配置（未启用），未指定名称、数据库名称和连接池参数。
-
-这些参数可以根据需要启用和调整，以定义不同数据库的连接池设置。
 pgbouncer_pools:
   - { name: "postgres", dbname: "postgres", pool_parameters: "" }
 #  - { name: "mydatabase", dbname: "mydatabase", pool_parameters: "pool_size=20 pool_mode=transaction" }
 #  - { name: "", dbname: "", pool_parameters: "" }
 #  - { name: "", dbname: "", pool_parameters: "" }
 
-
-# Extended variables (optional)
-这段配置文件定义了Patroni的扩展变量，用于配置Patroni的REST API和集群行为。以下是每个参数的详细解释：
-
-- **REST API相关**：
-  - **`patroni_restapi_listen_addr`**: REST API监听的IP地址，`0.0.0.0`表示监听所有接口，也可以使用`{{ inventory_hostname }}`监听特定IP地址。
-  - **`patroni_restapi_port`**: REST API的端口号。
-  - **`patroni_restapi_username`**: REST API的用户名。
-  - **`patroni_restapi_password`**: REST API的密码（请更改默认密码）。
-
-- **集群行为相关**：
-  - **`patroni_ttl`**: 集群的TTL（存活时间），单位为秒。
-  - **`patroni_loop_wait`**: Patroni主循环的等待时间，单位为秒。
-  - **`patroni_retry_timeout`**: 操作重试的超时时间，单位为秒。
-  - **`patroni_master_start_timeout`**: 启动主节点的超时时间，单位为秒。
-  - **`patroni_maximum_lag_on_failover`**: 切换时，跟随节点可以落后主节点的最大字节数。
-  - **`patroni_maximum_lag_on_replica`**: 副本节点在只读查询中可以落后的最大延迟（这里是100MB）。
+。
 
 这些参数可以根据您的需求进行调整，以优化Patroni集群的性能和行为。
 patroni_restapi_listen_addr: "0.0.0.0" # Listen on all interfaces. Or use "{{ inventory_hostname }}" to listen on a specific IP address.
 patroni_restapi_port: 8008
 patroni_restapi_username: "patroni"
-patroni_restapi_password: "restapi-pass"  # please change password
+patroni_restapi_password: "123456"  # please change password
 patroni_ttl: 30
 patroni_loop_wait: 10
 patroni_retry_timeout: 10
