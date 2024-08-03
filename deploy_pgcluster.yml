@@ -63,23 +63,20 @@
       tags: always
 
   tasks:
-    - name: "finaly | 测试结束"
-      fail:
-        msg: "完成测试"
-      when: 1 == 1
-    - name: Clean yum cache
+    
+    - name: '019 | 清理缓存'
       ansible.builtin.command: yum clean all
       when:
         - ansible_os_family == "RedHat"
         - ansible_distribution_major_version == '7'
 
-    - name: Clean dnf cache
+    - name: '019 | 清理缓存'
       ansible.builtin.command: dnf clean all
       when:
         - ansible_os_family == "RedHat"
         - ansible_distribution_major_version is version('8', '>=')
 
-    - name: Update apt cache
+    - name: '020 | 更新apt缓存'
       ansible.builtin.apt:
         update_cache: true
         cache_valid_time: 3600
@@ -88,7 +85,10 @@
       delay: 5
       retries: 3
       when: ansible_os_family == "Debian"
-
+    - name: "finaly | 测试结束"
+      fail:
+        msg: "完成测试"
+      when: 1 == 1
     - name: Make sure the gnupg and apt-transport-https packages are present
       ansible.builtin.apt:
         pkg:
