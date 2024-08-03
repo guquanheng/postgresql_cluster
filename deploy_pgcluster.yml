@@ -201,11 +201,6 @@
     - role: ssh-keys
     - role: copy
 
-
-- name: "finaly | 测试结束"
-  fail:
-    msg: "完成测试"
-  when: 1 == 1
 - name: deploy_pgcluster.yml | Deploy balancers
   ansible.builtin.import_playbook: balancers.yml
   when: with_haproxy_load_balancing|bool
@@ -231,7 +226,7 @@
     - role: pgbackrest
       when: pgbackrest_install|bool
 
-- name: deploy_pgcluster.yml | PostgreSQL Cluster Deployment
+- name: '058 | 部署pgcluster'
   hosts: postgres_cluster
   become: true
   become_method: sudo
@@ -244,7 +239,10 @@
     - name: Include main variables
       ansible.builtin.include_vars: "vars/main.yml"
       tags: always
-
+    - name: "finaly | 测试结束"
+      fail:
+        msg: "完成测试"
+      when: 1 == 1
     - name: Include system variables
       ansible.builtin.include_vars: "vars/system.yml"
       tags: always
