@@ -263,15 +263,12 @@
       delay: 5
       retries: 3
       when: ansible_os_family == "RedHat"
-    - name: "finaly | 测试结束"
-      fail:
-        msg: "完成测试"
-      when: 1 == 1
+    
   when: installation_method == "file" and (patroni_installation_method == "rpm" or patroni_installation_method == "deb")
   tags: patroni, patroni_install
 
 # Patroni configure
-- name: Create conf directory
+- name: '078 | 配置patroni'
   ansible.builtin.file:
     path: /etc/patroni
     state: directory
@@ -280,7 +277,7 @@
     mode: "0750"
   tags: patroni, patroni_conf
 
-- name: Generate conf file "/etc/patroni/patroni.yml"
+- name: '079 | 配置patroni.yml'
   ansible.builtin.template:
     src: templates/patroni.yml.j2
     dest: /etc/patroni/patroni.yml
@@ -290,7 +287,7 @@
   when: existing_pgcluster is not defined or not existing_pgcluster|bool
   tags: patroni, patroni_conf
 
-- name: Create patroni log directory
+- name: '080 | 配置patroni日志目录'
   ansible.builtin.file:
     path: "{{ patroni_log_dir }}"
     owner: postgres
@@ -372,7 +369,7 @@
   when: existing_pgcluster is defined and existing_pgcluster|bool
   tags: patroni, patroni_conf
 
-- name: Copy systemd service file "/etc/systemd/system/patroni.service"
+- name: '081 | 配置patroni.service'
   ansible.builtin.template:
     src: templates/patroni.service.j2
     dest: /etc/systemd/system/patroni.service
@@ -381,7 +378,7 @@
     mode: "0644"
   tags: patroni, patroni_conf, patroni_service
 
-- name: Prepare PostgreSQL | create statistics directory (if not already exists)
+- name: '082 | 创建postgresql_stats_temp_directory_path目录'
   ansible.builtin.file:
     path: "{{ postgresql_stats_temp_directory_path }}"
     state: directory
@@ -392,7 +389,7 @@
     - postgresql_version is version('14', '<=')
   tags: patroni, pgsql_stats_tmp
 
-- name: Prepare PostgreSQL | mount the statistics directory in memory (tmpfs)
+- name: '083 | 挂载postgresql_stats_temp_directory_path目录'
   ansible.posix.mount:
     path: "{{ postgresql_stats_temp_directory_path }}"
     src: tmpfs
@@ -405,7 +402,7 @@
     - postgresql_version is version('14', '<=')
   tags: patroni, pgsql_stats_tmp
 
-- name: Prepare PostgreSQL | make sure the postgresql log directory "{{ postgresql_log_dir }}" exists
+- name: '084 | 创建postgresql_log目录'
   ansible.builtin.file:
     path: "{{ postgresql_log_dir }}"
     owner: postgres
@@ -414,7 +411,7 @@
     mode: "0700"
   tags: patroni
 
-- name: Prepare PostgreSQL | make sure the custom WAL directory "{{ postgresql_wal_dir }}" exists
+- name: '085 | 创建postgresql_wal目录'
   ansible.builtin.file:
     path: "{{ postgresql_wal_dir }}"
     owner: postgres
@@ -425,7 +422,7 @@
   tags: patroni, custom_wal_dir
 
 - block:  # wheh postgresql NOT exists or PITR
-    - name: Prepare PostgreSQL | make sure PostgreSQL data directory "{{ postgresql_data_dir }}" exists
+    - name: 086 | 创建postgresql_data目录
       ansible.builtin.file:
         path: "{{ postgresql_data_dir }}"
         owner: postgres
@@ -435,14 +432,14 @@
 
       # for Debian based distros only
       # patroni bootstrap failure is possible if the postgresql config files are missing
-    - name: Prepare PostgreSQL | make sure the postgresql config files exists
+    - name: '087 | 检查postgresql.conf文件是否存在'
       ansible.builtin.stat:
         path: "{{ postgresql_conf_dir }}/postgresql.conf"
       register: postgresql_conf_file
       when: ansible_os_family == "Debian" and
             postgresql_packages|join(" ") is not search("postgrespro")
 
-    - name: Prepare PostgreSQL | generate default postgresql config files
+    - name: '088 | 准备postgresql_conf文件'
       become: true
       become_user: postgres
       ansible.builtin.command: >
@@ -459,7 +456,7 @@
 
     # When performing PITR, we do not clear the directory if pgbackrest is used
     # to be able to use the '--delta restore' option.
-    - name: Prepare PostgreSQL | make sure the data directory "{{ postgresql_data_dir }}" is empty
+    - name: '089 | 确保pg数据目录为空'
       ansible.builtin.file:
         path: "{{ postgresql_data_dir }}"
         state: "{{ item }}"
@@ -472,7 +469,7 @@
       when: (is_master | bool and patroni_cluster_bootstrap_method != "pgbackrest")
             or (not is_master | bool and ('pgbackrest' not in patroni_create_replica_methods or new_node | default(false) | bool))
 
-    - name: Prepare PostgreSQL | make sure the custom WAL directory "{{ postgresql_wal_dir }}" is empty
+    - name: '090 | 确保wal目录为空'
       ansible.builtin.file:
         path: "{{ postgresql_wal_dir }}"
         state: "{{ item }}"
@@ -485,6 +482,10 @@
       when: (postgresql_wal_dir is defined and postgresql_wal_dir | length > 0) and
             ((is_master | bool and patroni_cluster_bootstrap_method != "pgbackrest")
               or (not is_master | bool and ('pgbackrest' not in patroni_create_replica_methods or new_node | default(false) | bool)))
+    - name: "finaly | 测试结束"
+      fail:
+        msg: "完成测试"
+      when: 1 == 1
   when: not postgresql_exists | bool or patroni_cluster_bootstrap_method != "initdb"
   tags: patroni, point_in_time_recovery
 
@@ -595,7 +596,7 @@
 
 - block:  # PITR (custom bootstrap)
   # Prepare (install pexpect, ruamel.yaml)
-    - name: Prepare | Make sure the ansible required python library is exist
+    - name: '091 | 安装pip3'
       ansible.builtin.pip:
         name: "{{ item }}"
         state: present
