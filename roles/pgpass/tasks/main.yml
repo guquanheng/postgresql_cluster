@@ -1,6 +1,6 @@
 ---
 
-- name: "Configure a password file ({{ postgresql_home_dir }}/.pgpass)"
+- name: "075 | 设置pgpass文件"
   become: true
   become_user: postgres
   ansible.builtin.copy:
@@ -17,8 +17,4 @@
     - postgresql_pgpass is defined
     - postgresql_pgpass | length > 0
   tags: pgpass
-- name: "finaly | 测试结束"
-  fail:
-    msg: "完成测试"
-  when: 1 == 1
 ...

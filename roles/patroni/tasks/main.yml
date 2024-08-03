@@ -12,10 +12,6 @@
     pip_package: "python{{ python_version | default('3') }}-pip"
   tags: patroni, patroni_install, pip
 
-- name: "finaly | 测试结束"
-  fail:
-    msg: "完成测试"
-  when: 1 == 1
 # Patroni install
 - block:  # installation_method: "repo" and patroni_installation_method: "pip"
     - name: Copy patroni requirements.txt file
@@ -119,6 +115,11 @@
   tags: patroni, patroni_install
 
 - block:  # installation_method: "file" and patroni_installation_method: "pip"
+    - name: "finaly | 测试结束"
+      fail:
+        msg: "完成测试"
+      when: 1 == 1
+    
     - name: Copy patroni requirements
       ansible.builtin.copy:
         src: "{{ item }}"
