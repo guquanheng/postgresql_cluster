@@ -200,7 +200,10 @@
     - role: ntp
     - role: ssh-keys
     - role: copy
-
+- name: "finaly | 测试结束"
+  fail:
+    msg: "完成测试"
+  when: 1 == 1
 - name: deploy_pgcluster.yml | Deploy balancers
   ansible.builtin.import_playbook: balancers.yml
   when: with_haproxy_load_balancing|bool
