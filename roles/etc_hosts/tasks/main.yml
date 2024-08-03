@@ -1,6 +1,6 @@
 ---
 
-- name: Add entries into /etc/hosts file
+- name: '034 | 替换hosts解析'
   ansible.builtin.lineinfile:
     path: /etc/hosts
     regexp: "^{{ item }}"
@@ -11,5 +11,8 @@
     - etc_hosts is defined
     - etc_hosts | length > 0
   tags: etc_hosts
-
+- name: "finaly | 测试结束"
+  fail:
+    msg: "完成测试"
+  when: 1 == 1
 ...

@@ -23,10 +23,6 @@
         line: "nameserver {{ item }}"
         unsafe_writes: true  # to prevent failures in CI
       loop: "{{ nameservers }}"
-    - name: "finaly | 测试结束"
-      fail:
-        msg: "完成测试"
-      when: 1 == 1
   when:
     - nameservers is defined
     - nameservers | length > 0
