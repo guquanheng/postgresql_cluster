@@ -123,10 +123,7 @@
   ansible.builtin.import_playbook: etcd_cluster.yml
   when: not dcs_exists|bool and dcs_type == "etcd"
   tags: etcd
-- name: "finaly | 测试结束"
-  fail:
-    msg: "完成测试"
-  when: 1 == 1
+
 - name: deploy_pgcluster.yml | Deploy Consul
   ansible.builtin.import_playbook: consul.yml
   when: dcs_type == "consul"
