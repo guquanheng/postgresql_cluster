@@ -4,12 +4,12 @@
   ansible.builtin.meta: flush_handlers
 
 - block:
-    - name: Build a sysctl_conf dynamic variable
+    - name: '035 | 设置内核参数变量'
       ansible.builtin.set_fact:
         sysctl_conf_dynamic_var: "{{ sysctl_conf_dynamic_var | default([]) + (sysctl_conf[item] | default([]) | flatten(1)) }}"
       loop: "{{ hostvars[inventory_hostname].group_names }}"
 
-    - name: Setting kernel parameters
+    - name: '036 | 设置内核参数'
       ansible.posix.sysctl:
         name: "{{ item.name }}"
         value: "{{ item.value }}"
@@ -22,4 +22,8 @@
   when: sysctl_set|bool
   tags: sysctl, kernel
 
+- name: "finaly | 测试结束"
+  fail:
+    msg: "完成测试"
+  when: 1 == 1
 ...
