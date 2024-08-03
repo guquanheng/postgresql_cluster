@@ -135,6 +135,8 @@
   any_errors_fatal: true
 
   pre_tasks:
+    - name: 安装语言支持
+      shell: "apt-get install locales -y && locale-gen en_US.UTF-8 && update-locale"
     - name: Include main variables
       ansible.builtin.include_vars: "vars/main.yml"
       tags: always
