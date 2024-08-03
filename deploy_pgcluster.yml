@@ -186,7 +186,6 @@
     - role: hostname
     - role: resolv_conf
     - role: etc_hosts
-    
     - role: add-repository
     - role: packages
     - role: sudo
@@ -226,7 +225,7 @@
     - role: pgbackrest
       when: pgbackrest_install|bool
 
-- name: '058 | 部署pgcluster'
+- name: '060 | 部署pgcluster'
   hosts: postgres_cluster
   become: true
   become_method: sudo
