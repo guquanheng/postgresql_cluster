@@ -135,22 +135,19 @@
   become_method: sudo
   gather_facts: true
   any_errors_fatal: true
-- name: "finaly | 测试结束"
-  fail:
-    msg: "完成测试"
-  when: 1 == 1
+
   pre_tasks:
-    - name: 安装语言支持
+    - name: '056 | 安装语言支持'
       shell: "apt-get install locales -y && locale-gen en_US.UTF-8 && update-locale"
-    - name: Include main variables
+    - name: '057 | 导入主要变量'
       ansible.builtin.include_vars: "vars/main.yml"
       tags: always
-
-    - name: Include system variables
+    
+    - name: '058 | 导入系统变量'
       ansible.builtin.include_vars: "vars/system.yml"
       tags: always
 
-    - name: Include OS-specific variables
+    - name: '059 | 导入操作系统相关变量'
       ansible.builtin.include_vars: "vars/{{ ansible_os_family }}.yml"
       tags: always
 
@@ -173,7 +170,10 @@
       ansible.builtin.set_fact:
         nameservers: "{{ ['127.0.0.1'] + (nameservers | default([])) }}"
       when: dcs_type == "consul" and consul_dnsmasq_enable | bool and ('127.0.0.1' not in (nameservers | default([])))
-
+    - name: "finaly | 测试结束"
+      fail:
+        msg: "完成测试"
+      when: 1 == 1
   roles:
     - role: ansible-role-firewall
       environment: "{{ proxy_env | default({}) }}"
