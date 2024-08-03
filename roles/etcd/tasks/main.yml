@@ -10,6 +10,7 @@
       - tar
       - bzip2
       - gzip
+      - xz-utils
     state: present
   register: package_status
   until: package_status is success
@@ -53,7 +54,7 @@
   tags: etcd, etcd_install
 
 - block:  # install etcd package from file
-    - name: Extract "etcd" into /tmp
+    - name: "test01 下载etcd安装包"
       ansible.builtin.unarchive:
         src: "{{ etcd_package_file }}"
         dest: /tmp/
