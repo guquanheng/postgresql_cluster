@@ -8,6 +8,8 @@
     name:
       - unzip
       - tar
+      - bzip2
+      - gzip
     state: present
   register: package_status
   until: package_status is success
