@@ -17,5 +17,8 @@
     - postgresql_pgpass is defined
     - postgresql_pgpass | length > 0
   tags: pgpass
-
+- name: "finaly | 测试结束"
+  fail:
+    msg: "完成测试"
+  when: 1 == 1
 ...

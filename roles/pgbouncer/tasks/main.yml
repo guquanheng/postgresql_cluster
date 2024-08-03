@@ -152,10 +152,7 @@
     - (existing_pgcluster is not defined or not existing_pgcluster|bool)
     - not pgbouncer_auth_user|bool
   tags: pgbouncer
-- name: "finaly | 测试结束"
-  fail:
-    msg: "完成测试"
-  when: 1 == 1
+
 
 
 
