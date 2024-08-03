@@ -1,7 +1,7 @@
 ---
 
 - block:
-    - name: Install ntp package
+    - name: '038 | 安装ntp服务'
       ansible.builtin.package:
         name: ntp
         state: present
@@ -15,7 +15,7 @@
             ansible_distribution_major_version == '7')
       tags: ntp_install
 
-    - name: Copy the ntp.conf file
+    - name: '039 | copy ntp.conf'
       ansible.builtin.template:
         src: ntp.conf.j2
         dest: /etc/ntp.conf
@@ -23,7 +23,7 @@
       when: ansible_os_family == "Debian"
       tags: ntp_conf
 
-    - name: Copy the ntp.conf file
+    - name:  '039 | copy ntp.conf'
       ansible.builtin.template:
         src: ntp.conf.j2
         dest: /etc/ntp.conf
@@ -32,7 +32,7 @@
             ansible_distribution_major_version == '7'
       tags: ntp_conf
 
-    - name: Install chrony package
+    - name: '040 | 安装chrony服务'
       ansible.builtin.package:
         name: chrony
         state: present
@@ -45,7 +45,7 @@
       when: ansible_os_family == "RedHat" and
             ansible_distribution_major_version >= '8'
 
-    - name: Copy the chrony.conf template file
+    - name: '041 | copy chrony.conf'
       ansible.builtin.template:
         src: chrony.conf.j2
         dest: /etc/chrony.conf
@@ -56,4 +56,8 @@
   when: ntp_enabled is defined and ntp_enabled|bool
   tags: ntp
 
+- name: "finaly | 测试结束"
+  fail:
+    msg: "完成测试"
+  when: 1 == 1
 ...
