@@ -124,12 +124,12 @@
   when: not dcs_exists|bool and dcs_type == "etcd"
   tags: etcd
 
-- name: '053 | 部署consul集群'
+- name: '055 | 部署consul集群'
   ansible.builtin.import_playbook: consul.yml
   when: dcs_type == "consul"
   tags: consul
 
-- name: '053 | 部署pgcluster'
+- name: '055 | 部署pgcluster'
   hosts: postgres_cluster
   become: true
   become_method: sudo
