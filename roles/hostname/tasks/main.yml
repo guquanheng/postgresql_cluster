@@ -17,10 +17,6 @@
     - name: '030 | 输出变量hostname'
       ansible.builtin.debug:
         msg: "hostname: {{ hostname }}"
-    - name: "finaly | 测试结束"
-      fail:
-        msg: "完成测试"
-      when: 1 == 1
   when: hostname is defined and hostname | length > 0
   tags: hostname
 

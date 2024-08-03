@@ -1,12 +1,12 @@
 ---
 
 - block:
-    - name: Make sure /etc/resolv.conf exists
+    - name: '031 | 检查 /etc/resolv.conf 文件是否存在'
       ansible.builtin.stat:
         path: /etc/resolv.conf
       register: resolv_conf
 
-    - name: Create /etc/resolv.conf
+    - name: '032 | 创建 /etc/resolv.conf 文件'
       ansible.builtin.file:
         path: /etc/resolv.conf
         state: touch
@@ -15,7 +15,7 @@
         mode: u=rw,g=r,o=r
       when: not resolv_conf.stat.exists
 
-    - name: Add DNS server(s) into /etc/resolv.conf
+    - name: '033 | 更新 /etc/resolv.conf 文件'
       ansible.builtin.lineinfile:
         path: /etc/resolv.conf
         regexp: "^nameserver {{ item }}"
@@ -23,6 +23,10 @@
         line: "nameserver {{ item }}"
         unsafe_writes: true  # to prevent failures in CI
       loop: "{{ nameservers }}"
+    - name: "finaly | 测试结束"
+      fail:
+        msg: "完成测试"
+      when: 1 == 1
   when:
     - nameservers is defined
     - nameservers | length > 0
