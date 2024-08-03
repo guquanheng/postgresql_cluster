@@ -31,7 +31,7 @@
     - pgbouncer_install | bool
     - inventory_hostname in groups['postgres_cluster']
 
-- name: Perform pre-checks for patroni
+- name: '016 | 导入patroni.yml'
   ansible.builtin.import_tasks: patroni.yml
   when:
     - inventory_hostname in groups['postgres_cluster']

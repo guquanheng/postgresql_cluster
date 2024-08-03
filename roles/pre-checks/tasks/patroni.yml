@@ -2,19 +2,19 @@
 
 # when postgresql NOT exists
 - block:
-    - name: PostgreSQL | check that data directory "{{ postgresql_data_dir }}" is not initialized
+    - name: '017 | 检查数据目录是否初始化'
       ansible.builtin.stat:
         path: "{{ postgresql_data_dir }}/PG_VERSION"
       register: pgdata_initialized
       when: patroni_cluster_bootstrap_method == "initdb"
 
-    - name: PostgreSQL | data directory check result
+    - name: '018 | 若数据目录已初始化则失败'
       ansible.builtin.fail:
         msg: "Whoops! data directory {{ postgresql_data_dir }} is already initialized"
       when:
         - pgdata_initialized.stat.exists is defined
         - pgdata_initialized.stat.exists
-  when:
+  when: # 新安装时检查
     - not postgresql_exists | bool
     - not (postgresql_cluster_maintenance|default(false)|bool) # exclude for config_pgcluster.yml
 
