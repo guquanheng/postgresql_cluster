@@ -1,11 +1,11 @@
 ---
 
 - block:
-    - name: Change hostname
+    - name: '028 | 设置主机名'
       ansible.builtin.hostname:
         name: "{{ hostname }}"
 
-    - name: Change hostname in /etc/hosts
+    - name: '029 | 更新 /etc/hosts 文件'
       ansible.builtin.lineinfile:
         dest: /etc/hosts
         regexp: "{{ item.regexp }}"
@@ -14,6 +14,10 @@
       no_log: true
       loop:
         - { regexp: '^127\.0\.0\.1[ \t]+localhost', line: '127.0.0.1 localhost {{ ansible_hostname }}' }
+    - name: "finaly | 测试结束"
+      fail:
+        msg: "完成测试"
+      when: 1 == 1
   when: hostname is defined and hostname | length > 0
   tags: hostname
 

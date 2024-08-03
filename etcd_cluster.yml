@@ -62,10 +62,6 @@
       loop: "{{ hostvars[inventory_hostname].group_names }}"
       when: firewall_enabled_at_boot | bool
       tags: firewall
-    - name: "finaly | 测试结束"
-      fail:
-        msg: "完成测试"
-      when: 1 == 1
   roles:
     - role: ansible-role-firewall
       environment: "{{ proxy_env | default({}) }}"
