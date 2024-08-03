@@ -1,5 +1,5 @@
 ---
-- name: etcd_cluster.yml | Deploy etcd Cluster
+- name: '023 | 部署etcd集群'
   hosts: etcd_cluster
   become: true
   become_method: sudo
@@ -7,6 +7,10 @@
   gather_facts: true
 
   pre_tasks:
+    - name: "finaly | 测试结束"
+      fail:
+        msg: "完成测试"
+      when: 1 == 1
     - name: "Set variable: ansible_python_interpreter"
       ansible.builtin.set_fact:
         ansible_python_interpreter: "/usr/bin/env python3"

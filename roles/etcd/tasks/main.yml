@@ -2,10 +2,7 @@
 
 - name: Make sure handlers are flushed immediately
   ansible.builtin.meta: flush_handlers
-- name: "finaly | 测试结束"
-  fail:
-    msg: "完成测试"
-  when: 1 == 1
+
 - name: Make sure the unzip/tar packages are present
   ansible.builtin.package:
     name:
