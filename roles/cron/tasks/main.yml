@@ -1,7 +1,7 @@
 ---
 # tasks file for cron
 
-- name: Make sure that the cronie package is installed
+- name: '064 | 安装cron'
   ansible.builtin.package:
     name: cronie
     state: present
@@ -12,8 +12,7 @@
   environment: "{{ proxy_env | default({}) }}"
   when: ansible_os_family == "RedHat"
   tags: cron
-
-- name: Make sure that the cron package is installed
+- name: '064 | 安装cron'
   ansible.builtin.apt:
     name: cron
     state: present
@@ -25,7 +24,7 @@
   when: ansible_os_family == "Debian"
   tags: cron
 
-- name: Add cron jobs
+- name: '065 | 添加cron任务'
   ansible.builtin.cron:
     cron_file: "{{ item.file | default('') }}"
     user: "{{ item.user | default('postgres') }}"

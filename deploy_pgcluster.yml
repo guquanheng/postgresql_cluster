@@ -189,7 +189,7 @@
     - role: add-repository
     - role: packages
     - role: sudo
-    - role: swap
+    # - role: swap
     - role: sysctl
     - role: transparent_huge_pages
     - role: pam_limits
@@ -235,21 +235,17 @@
     - ansible.builtin.import_tasks: roles/pgbouncer/handlers/main.yml
 
   pre_tasks:
-    - name: Include main variables
+    - name: '061 | 导入主要变量'
       ansible.builtin.include_vars: "vars/main.yml"
       tags: always
-    - name: "finaly | 测试结束"
-      fail:
-        msg: "完成测试"
-      when: 1 == 1
-    - name: Include system variables
+    - name: '062 | 导入系统变量'
       ansible.builtin.include_vars: "vars/system.yml"
       tags: always
 
-    - name: Include OS-specific variables
+    - name: '063 | 导入操作系统相关变量'
       ansible.builtin.include_vars: "vars/{{ ansible_os_family }}.yml"
       tags: always
-
+    
   roles:
     - role: wal-g
       when: wal_g_install|bool

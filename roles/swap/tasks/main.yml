@@ -68,4 +68,5 @@
     (swap_exists.stdout_lines | map('trim') | map('int') | sum / 1024 / 1024) | round | int != swap_file_size_mb|int)
   tags: swap, swap_create
 
+
 ...

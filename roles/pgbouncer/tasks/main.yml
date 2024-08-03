@@ -1,6 +1,7 @@
 ---
 
-- name: Install pgbouncer package
+
+- name: '065 | 安装pgbouncer'
   ansible.builtin.package:
     name: pgbouncer
     state: latest
@@ -14,8 +15,9 @@
         ansible_distribution_major_version == '7')
   tags: pgbouncer_install, pgbouncer
 
+
 # RHEL 8
-- name: Install pgbouncer package
+- name: '065 | 安装pgbouncer'
   ansible.builtin.dnf:
     name: pgbouncer
     state: latest
@@ -25,7 +27,7 @@
         ansible_distribution_major_version >= '8'
   tags: pgbouncer_install, pgbouncer
 
-- name: Ensure config directory "{{ pgbouncer_conf_dir }}" exist
+- name: '066 | 创建pgbouncer配置目录'
   ansible.builtin.file:
     path: "{{ pgbouncer_conf_dir }}"
     state: directory
@@ -34,7 +36,7 @@
     mode: "0750"
   tags: pgbouncer_conf, pgbouncer
 
-- name: Ensure log directory "{{ pgbouncer_log_dir }}" exist
+- name: '067 | 创建pgbouncer日志目录'
   ansible.builtin.file:
     path: "{{ pgbouncer_log_dir }}"
     state: directory
@@ -43,7 +45,7 @@
     mode: "0750"
   tags: pgbouncer_conf, pgbouncer
 
-- name: Check if pgbouncer systemd service file exists
+- name: '068 | 检查pgbouncer systemd服务文件'
   ansible.builtin.stat:
     path: /etc/systemd/system/pgbouncer.service
   register: pgbouncer_systemd_service
@@ -59,7 +61,7 @@
     - not pgbouncer_systemd_service.stat.exists
   tags: pgbouncer_service, pgbouncer
 
-- name: Configure pgbouncer systemd service file
+- name: '069 | 设置svc文件'
   ansible.builtin.template:
     src: templates/pgbouncer.service.j2
     dest: "/etc/systemd/system/pgbouncer{{ '-%d' % (idx + 1) if idx > 0 else '' }}.service"
@@ -73,7 +75,7 @@
   notify: "restart pgbouncer"
   tags: pgbouncer_service, pgbouncer
 
-- name: Ensure pgbouncer service is enabled
+- name: '070 | 启动pgbouncer服务'
   ansible.builtin.systemd:
     daemon_reload: true
     name: "pgbouncer{{ '-%d' % (idx + 1) if idx > 0 else '' }}"
@@ -84,13 +86,15 @@
     label: "{{ 'pgbouncer' if idx == 0 else 'pgbouncer-%d' % (idx + 1) }}"
   tags: pgbouncer_service, pgbouncer
 
+
+
 - block:  # workaround for pgbouncer from postgrespro repo
-    - name: Check that /usr/bin/pgbouncer is exists
+    - name: '071 | 查看pgbouncer二进制文件是否存在'
       ansible.builtin.stat:
         path: /usr/bin/pgbouncer
       register: pgbouncer_bin
 
-    - name: create a symlink to /usr/sbin/pgbouncer
+    - name: '072 | 创建pgbouncer二进制文件软链接'
       ansible.builtin.file:
         src: /usr/sbin/pgbouncer
         dest: /usr/bin/pgbouncer
@@ -102,7 +106,7 @@
         postgresql_packages|join(" ") is search("postgrespro")
   tags: pgbouncer_service, pgbouncer
 
-- name: Enable log rotation with logrotate
+- name: '073 | 配置pgbouncer日志轮转'
   ansible.builtin.copy:
     content: |
       {{ pgbouncer_log_dir }}/pgbouncer{{ '-%d' % (idx + 1) if idx > 0 else '' }}.log {
@@ -122,7 +126,7 @@
     label: "{{ 'pgbouncer' if idx == 0 else 'pgbouncer-%d' % (idx + 1) }}"
   tags: pgbouncer_logrotate, pgbouncer
 
-- name: Configure pgbouncer.ini
+- name: '074 | 配置pgbouncer.ini'
   ansible.builtin.template:
     src: templates/pgbouncer.ini.j2
     dest: "{{ pgbouncer_conf_dir }}/pgbouncer{{ '-%d' % (idx + 1) if idx > 0 else '' }}.ini"
@@ -137,7 +141,7 @@
   when: existing_pgcluster is not defined or not existing_pgcluster|bool
   tags: pgbouncer_conf, pgbouncer
 
-- name: Create userlist.txt
+- name: '075 | 配置pgbouncer用户认证文件'
   ansible.builtin.template:
     src: templates/userlist.txt.j2
     dest: "{{ pgbouncer_conf_dir }}/userlist.txt"
@@ -149,7 +153,14 @@
     - not pgbouncer_auth_user|bool
   tags: pgbouncer
 
+
+
+
 - block:  # for add_pgnode.yml
+    - name: "finaly | 测试结束"
+      fail:
+        msg: "完成测试"
+      when: 1 == 1
     - name: Fetch pgbouncer.ini file from master
       run_once: true
       ansible.builtin.fetch:
