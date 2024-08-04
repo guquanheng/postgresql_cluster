@@ -3,10 +3,10 @@
 # PostgreSQL variables
 postgresql_cluster_name: "gongji"
 # You can specify custom data dir path. Example: "/pgdata/{{ postgresql_version }}/main"
-postgresql_data_dir: "/data/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
+postgresql_data_dir: "/pgsql/data"
 # You can specify custom WAL dir path. Example: "/pgwal/{{ postgresql_version }}/pg_wal"
-postgresql_wal_dir: "/data/postgresql/wal"  # if defined, symlink will be created [optional]
-postgresql_conf_dir: "/etc/postgresql/{{ postgresql_version }}/{{ postgresql_cluster_name }}"
+postgresql_wal_dir: "/pgsql/backup/wal"  # if defined, symlink will be created [optional]
+postgresql_conf_dir: "/pgsql/data"
 postgresql_bin_dir: "/apps/pgsql/bin"
 postgresql_log_dir: "/var/log/postgresql"
 postgresql_unix_socket_dir: "/var/run/postgresql"
