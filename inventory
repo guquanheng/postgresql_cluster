@@ -31,11 +31,11 @@
 
 # PostgreSQL nodes
 [master]
-192.168.146.205 hostname=pgnode01 postgresql_exists=false # patroni_tags="datacenter=dc1"
+192.168.146.205 hostname=pgnode01 postgresql_exists=true # patroni_tags="datacenter=dc1"
 
 [replica]
-192.168.146.206 hostname=pgnode02 postgresql_exists=false # patroni_tags="datacenter=dc1"
-192.168.146.207 hostname=pgnode03 postgresql_exists=false # patroni_tags="datacenter=dc1"
+192.168.146.206 hostname=pgnode02 postgresql_exists=true # patroni_tags="datacenter=dc1"
+192.168.146.207 hostname=pgnode03 postgresql_exists=true # patroni_tags="datacenter=dc1"
 #10.128.64.144 hostname=pgnode04 postgresql_exists=false patroni_tags="datacenter=dc2"
 #10.128.64.145 hostname=pgnode04 postgresql_exists=false patroni_tags="datacenter=dc2" new_node=true
 
